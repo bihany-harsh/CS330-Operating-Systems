@@ -117,33 +117,77 @@ void *memalloc(unsigned long size)
         }
     }
 
-    // if (!is_allocated) { // no free block with sufficient memory avail.
-    //     // new block of size 4MB
-    //     size_t block_size = size + SIZE_T_SIZE < FOURMB ? FOURMB : ALIGN(size + SIZE_T_SIZE);
-    //     void *ptr = mmap(NULL, block_size, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-    //     if (ptr == MAP_FAILED) {
-    //         return NULL;
-    //     }
-    //     void* iter = free_head;
-    //     while (*((void**)(iter)) != NULL) { // while iter->next != NULL
-    //         iter = *((void**)(iter));
-    //     }
-    //     *((void**)(iter)) = ptr + SIZE_T_SIZE;
-    //     *((void**)(ptr + SIZE_T_SIZE)) = NULL;
-    //     *((void**)(ptr + SIZE_T_SIZE + SIZE_T_SIZE)) = iter;
-    //     *((unsigned long*)(ptr)) = block_size;
-
-    //     ptr = ptr + SIZE_T_SIZE;
-
-    //     // after creating new block, call memalloc again
-    //     return memalloc(size);
-    // }
-
     return NULL;
 }
 
 int memfree(void *ptr)
 {
 	printf("memfree() called\n");
+
+    if (ptr == NULL) {
+        return -1;
+    }
+    
+    void *NEXT = NULL;
+    void *PREV = NULL;
+
+    void *iter = free_head;
+
+    while(iter != NULL) {
+        if (iter + *((size_t*)(iter - SIZE_T_SIZE)) == ptr) { // iter + iter's block_size = ptr
+            NEXT = iter;
+        }
+        if (iter == ptr + *((size_t*)(ptr - SIZE_T_SIZE))) { // ptr + ptr's block_size = iter
+            PREV = iter;
+        }
+
+        iter = *((void**)(iter));
+    }
+
+    if (NEXT != NULL){
+        // merge ptr and NEXT
+        *((size_t*)(ptr - SIZE_T_SIZE)) += *((size_t*)(NEXT - SIZE_T_SIZE));
+                                        // ptr->size = ptr->size + NEXT->size
+
+        // deleting the NEXT node from the free list
+        if (*((void**)(NEXT)) != NULL) { // if NEXT->next != NULL
+            void* NEXT_next = *((void**)(NEXT));
+            *((void**)(NEXT_next + ALIGNMENT)) = *((void**)(NEXT + ALIGNMENT));  // NEXT->next->prev = NEXT->prev
+        }
+        if (*((void**)(NEXT + ALIGNMENT)) != NULL) { // if NEXT->prev != NULL
+            void* NEXT_prev = *((void**)(NEXT + ALIGNMENT));
+            *((void**)(NEXT_prev)) = *((void**)(NEXT));  // NEXT->prev->next = NEXT->next
+        }
+    }
+
+    if (PREV != NULL) {
+        // merge ptr and PREV 
+        *((size_t*)(PREV - SIZE_T_SIZE)) += *((size_t*)(ptr - ALIGNMENT));
+                                        // PREV->size = PREV->size + ptr->size
+
+        // deleting the PREV node from the free list
+        if (*((void**)(PREV)) != NULL) { // if PREV->next != NULL
+            void* PREV_next = *((void**)(PREV));
+            *((void**)(PREV_next + ALIGNMENT)) = *((void**)(PREV + ALIGNMENT));  // PREV->next->prev = PREV->prev
+        }
+        if (*((void**)(PREV + ALIGNMENT)) != NULL) { // if PREV->prev != NULL
+            void* PREV_prev = *((void**)(PREV + ALIGNMENT));
+            *((void**)(PREV_prev)) = *((void**)(PREV));  // PREV->prev->next = PREV->next
+        }
+
+        ptr = PREV;
+    } else {
+        // metadata
+        *((void**)(ptr)) = NULL;  // ptr->next = NULL
+        *((void**)(ptr + SIZE_T_SIZE)) = NULL;   // ptr->prev = NULL
+    }
+
+    // Add ptr to the head of the free list
+    if (free_head != NULL) {
+        *((void **)(free_head + SIZE_T_SIZE)) = ptr; // set prev of current head to ptr
+        *((void**)(ptr)) = free_head; // set next of ptr to current head
+    }
+    free_head = ptr;
+
 	return 0;
 }	

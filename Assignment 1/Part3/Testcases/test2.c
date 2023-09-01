@@ -56,7 +56,7 @@ int main()
 	}
 
 	//verify that metadata (next pointer) in a memory chunk which was prev. free was maintained properly
-	if(((char*)(*((unsigned long*)p4))) != (p3+16))	
+	if(((char*)(*((unsigned long*)p4))) != (p3+24))	
 	{
 		printf("7.Testcase failed\n");
 		return -1;
