@@ -128,9 +128,13 @@ int main(int argc, char* argv[]) {
                     }
                 } else { 
                     close(fd[1]); 			// close the write end of the parent
-
+                    close(0);
+                    if (dup(fd[0]) == -1) {
+                        perror("dup");
+                        exit(-1);
+                    }
                     char buf[32];
-                    read(fd[0], buf, sizeof(buf));
+                    read(0, buf, sizeof(buf));
                     size_of_dir += atoll(buf); 
                 }
             } else {
