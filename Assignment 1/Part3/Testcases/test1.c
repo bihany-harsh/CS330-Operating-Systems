@@ -24,6 +24,8 @@ int main()
 		return -1;
 	}
 
+	printf("%lu\n", q - p);
+
 	if(q != p+24)
 	{
 		printf("3.Testcase failed\n");
