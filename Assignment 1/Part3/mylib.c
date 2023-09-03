@@ -39,7 +39,7 @@ void *memalloc(unsigned long size)
         // metadata
         *((size_t *)ptr) = block_size;
         *((void **)(ptr + SIZE_T_SIZE)) = NULL;  // next
-        *((void **)(ptr + SIZE_T_SIZE + SIZE_T_SIZE)) = NULL;   // prev
+        *((void **)(ptr + 2 * SIZE_T_SIZE)) = NULL;   // prev
 
         // ptr = ptr + SIZE_T_SIZE;
         free_head = ptr;
@@ -76,11 +76,11 @@ void *memalloc(unsigned long size)
 
                 if (*((void**)(ptr + SIZE_T_SIZE)) != NULL) { // if ptr->next != NULL
                     void* next = *((void**)(ptr + SIZE_T_SIZE));
-                    *((void**)(next + SIZE_T_SIZE + SIZE_T_SIZE)) = *((void**)(ptr + SIZE_T_SIZE + SIZE_T_SIZE));  // ptr->next->prev = ptr->prev
+                    *((void**)(next + 2*SIZE_T_SIZE)) = *((void**)(ptr + 2*SIZE_T_SIZE));  // ptr->next->prev = ptr->prev
                 }
 
-                if (*((void**)(ptr + SIZE_T_SIZE + SIZE_T_SIZE)) != NULL) { // if ptr->prev != NULL
-                    void* prev = *((void**)(ptr + SIZE_T_SIZE + SIZE_T_SIZE));
+                if (*((void**)(ptr + 2*SIZE_T_SIZE)) != NULL) { // if ptr->prev != NULL
+                    void* prev = *((void**)(ptr + 2*SIZE_T_SIZE));
                     *((void**)(prev + SIZE_T_SIZE)) = *((void**)(ptr + SIZE_T_SIZE));  // ptr->prev->next = ptr->next
                 }
 
@@ -96,12 +96,12 @@ void *memalloc(unsigned long size)
 
                 if (*((void**)(ptr + SIZE_T_SIZE)) != NULL) { // if ptr->next != NULL
                     *((void**)(ptr2 + SIZE_T_SIZE)) = *((void**)(ptr + SIZE_T_SIZE));  // ptr2->next = ptr->next
-                    *((void**)(*((void**)(ptr + SIZE_T_SIZE)) + SIZE_T_SIZE + SIZE_T_SIZE)) = ptr2;  // ptr->next->prev = ptr2
+                    *((void**)(*((void**)(ptr + SIZE_T_SIZE)) + 2*SIZE_T_SIZE)) = ptr2;  // ptr->next->prev = ptr2
                 }
 
-                if (*((void**)(ptr + SIZE_T_SIZE + SIZE_T_SIZE)) != NULL) { // if ptr->prev != NULL
-                    *((void**)(ptr2 + SIZE_T_SIZE + SIZE_T_SIZE)) = *((void**)(ptr + SIZE_T_SIZE + SIZE_T_SIZE));  // ptr2->prev = ptr->prev
-                    *((void**)(*((void**)(ptr + SIZE_T_SIZE + SIZE_T_SIZE)) + SIZE_T_SIZE)) = ptr2;  // ptr->prev->next = ptr2
+                if (*((void**)(ptr + 2*SIZE_T_SIZE)) != NULL) { // if ptr->prev != NULL
+                    *((void**)(ptr2 + 2*SIZE_T_SIZE)) = *((void**)(ptr + 2*SIZE_T_SIZE));  // ptr2->prev = ptr->prev
+                    *((void**)(*((void**)(ptr + 2*SIZE_T_SIZE)) + SIZE_T_SIZE)) = ptr2;  // ptr->prev->next = ptr2
                 }
 
                 *((size_t*)(ptr2)) = *((size_t*)(ptr)) - block_size;  // ptr2->size = ptr->size - block_size
@@ -155,10 +155,10 @@ int memfree(void *ptr)
         // deleting the NEXT node from the free list
         if (*((void**)(NEXT + SIZE_T_SIZE)) != NULL) { // if NEXT->next != NULL
             void* NEXT_next = *((void**)(NEXT + SIZE_T_SIZE));
-            *((void**)(NEXT_next + SIZE_T_SIZE + SIZE_T_SIZE)) = *((void**)(NEXT + SIZE_T_SIZE + SIZE_T_SIZE));  // NEXT->next->prev = NEXT->prev
+            *((void**)(NEXT_next + 2*SIZE_T_SIZE)) = *((void**)(NEXT + 2*SIZE_T_SIZE));  // NEXT->next->prev = NEXT->prev
         }
-        if (*((void**)(NEXT + SIZE_T_SIZE + SIZE_T_SIZE)) != NULL) { // if NEXT->prev != NULL
-            void* NEXT_prev = *((void**)(NEXT + SIZE_T_SIZE + SIZE_T_SIZE));
+        if (*((void**)(NEXT + 2*SIZE_T_SIZE)) != NULL) { // if NEXT->prev != NULL
+            void* NEXT_prev = *((void**)(NEXT + 2*SIZE_T_SIZE));
             *((void**)(NEXT_prev + SIZE_T_SIZE)) = *((void**)(NEXT + SIZE_T_SIZE));  // NEXT->prev->next = NEXT->next
         }
     }
@@ -170,10 +170,10 @@ int memfree(void *ptr)
         // deleting the PREV node from the free list
         if (*((void**)(PREV + SIZE_T_SIZE)) != NULL) { // if PREV->next != NULL
             void* PREV_next = *((void**)(PREV + SIZE_T_SIZE));
-            *((void**)(PREV_next + SIZE_T_SIZE + SIZE_T_SIZE)) = *((void**)(PREV + SIZE_T_SIZE + SIZE_T_SIZE));  // PREV->next->prev = PREV->prev
+            *((void**)(PREV_next + 2*SIZE_T_SIZE)) = *((void**)(PREV + 2*SIZE_T_SIZE));  // PREV->next->prev = PREV->prev
         }
-        if (*((void**)(PREV + SIZE_T_SIZE + SIZE_T_SIZE)) != NULL) { // if PREV->prev != NULL
-            void* PREV_prev = *((void**)(PREV + SIZE_T_SIZE + SIZE_T_SIZE));
+        if (*((void**)(PREV + 2*SIZE_T_SIZE)) != NULL) { // if PREV->prev != NULL
+            void* PREV_prev = *((void**)(PREV + 2*SIZE_T_SIZE));
             *((void**)(PREV_prev + SIZE_T_SIZE)) = *((void**)(PREV + SIZE_T_SIZE));  // PREV->prev->next = PREV->next
         }
 
@@ -182,12 +182,12 @@ int memfree(void *ptr)
         // metadata
         ptr = ptr - SIZE_T_SIZE;    // ptr init at the begin of block
         *((void**)(ptr + SIZE_T_SIZE)) = NULL;  // ptr->next = NULL
-        *((void**)(ptr + SIZE_T_SIZE + SIZE_T_SIZE)) = NULL;   // ptr->prev = NULL
+        *((void**)(ptr + 2*SIZE_T_SIZE)) = NULL;   // ptr->prev = NULL
     }
 
     // Add ptr to the head of the free list
     if (free_head != NULL) {
-        *((void **)(free_head + SIZE_T_SIZE + SIZE_T_SIZE)) = ptr; // set prev of current head to ptr
+        *((void **)(free_head + 2*SIZE_T_SIZE)) = ptr; // set prev of current head to ptr
         *((void**)(ptr + SIZE_T_SIZE)) = free_head; // set next of ptr to current head
     }
     free_head = ptr;
