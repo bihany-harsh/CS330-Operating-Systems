@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "../mylib.h"
 
-#define NUM 3
+#define NUM 4
 #define _1GB (1024*1024*1024)
 
 //Handling large allocations
