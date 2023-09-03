@@ -74,8 +74,8 @@ int main(int argc, char* argv[]) {
     struct stat file_stat;
     char fullpath[1024];
 
-    if (lstat(argv[1], &file_stat) == -1) {
-        perror("lstat");
+    if (stat(argv[1], &file_stat) == -1) {
+        perror("stat");
         exit(1);
     }
     size_of_dir += file_stat.st_size;
@@ -92,8 +92,8 @@ int main(int argc, char* argv[]) {
 			strcat(fullpath, "/");
 			strcat(fullpath, dir_entry->d_name);
 
-            if (lstat(fullpath, &file_stat) == -1) {
-                perror("lstat");
+            if (stat(fullpath, &file_stat) == -1) {
+                perror("stat");
                 continue;
             }
 
