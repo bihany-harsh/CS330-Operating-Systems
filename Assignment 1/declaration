@@ -6,8 +6,8 @@ Resources:
     Part1:
         1. https://en.wikibooks.org/wiki/A_Little_C_Primer/C_Command_Line_Arguments : To take arguments in a C program
         2. https://cplusplus.com/reference/cstring/ : String manipulation functions
-        4. https://www.ibm.com/docs/en/i/7.4?topic=functions-atoi-convert-character-string-integer : ato* class of functions
-        3. Man pages: `fork`, `execvp`
+        3. https://www.ibm.com/docs/en/i/7.4?topic=functions-atoi-convert-character-string-integer : ato* class of functions
+        4. Man pages: `fork`, `execvp`
 
     Part2:
         1. Man pages: `stat`, `lstat`, `readdir`, `opendir`
