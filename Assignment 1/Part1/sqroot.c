@@ -7,6 +7,11 @@
 
 int main(int argc, char* argv[])
 {
+	if (argc < 2) {
+		printf("Unable to execute\n");
+		exit(-1);
+	}
+	
 	if (argc == 2){
 		int n = atoi(argv[argc - 1]);
 		double n_d = (double)n;
@@ -20,7 +25,8 @@ int main(int argc, char* argv[])
 	pid = fork();
 
 	if (pid < 0) {
-		perror("fork");
+		// perror("fork");
+		printf("Unable to execute\n");
 		exit(-1);
 	}
 
@@ -50,7 +56,8 @@ int main(int argc, char* argv[])
 		new_argv[argc - 1] = NULL;
 		
 		if (execvp(new_exc, new_argv)) {
-			perror("exec");
+			// perror("exec");
+			printf("Unable to execute\n");
 		}
 		exit(-1);
 

@@ -6,6 +6,11 @@
 
 int main(int argc, char* argv[])
 {
+	if (argc < 2) {
+		printf("Unable to execute\n");
+		exit(-1);
+	}
+	
 	if (argc == 2){
 		printf("%d\n", atoi(argv[argc - 1])*atoi(argv[argc - 1]));
 		return 0;
@@ -17,6 +22,7 @@ int main(int argc, char* argv[])
 
 	if (pid < 0) {
 		perror("fork");
+		printf("Unable to execute\n");
 		exit(-1);
 	}
 
@@ -46,6 +52,7 @@ int main(int argc, char* argv[])
 		
 		if (execvp(new_exc, new_argv)) {
 			perror("exec");
+			printf("Unable to execute\n");
 		}
 		exit(-1);
 

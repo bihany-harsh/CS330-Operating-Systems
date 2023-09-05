@@ -65,7 +65,8 @@
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        printf("Require at least 1 argument\n");
+        // printf("Require at least 1 argument\n");
+        printf("Unable to execute\n");
         return 1;
     }
     DIR *dir;
@@ -75,7 +76,8 @@ int main(int argc, char* argv[]) {
     char fullpath[1024];
 
     if (stat(argv[1], &file_stat) == -1) {
-        perror("stat");
+        // perror("stat");
+        printf("Unable to execute\n");
         exit(1);
     }
     size_of_dir += file_stat.st_size;
@@ -93,20 +95,23 @@ int main(int argc, char* argv[]) {
 			strcat(fullpath, dir_entry->d_name);
 
             if (stat(fullpath, &file_stat) == -1) {
-                perror("stat");
+                // perror("stat");
+                printf("Unable to execute\n");
                 continue;
             }
 
             if (S_ISDIR(file_stat.st_mode)) {
                 int fd[2];
                 if (pipe(fd) < 0) {
-                    perror("pipe");
+                    // perror("pipe");
+                    printf("Unable to execute\n");
                     exit(-1);
                 }
 
                 pid_t pid = fork();
                 if (pid < 0) {
-                    perror("fork");
+                    // perror("fork");
+                    printf("Unable to execute\n");
                     exit(-1);
                 }
 
@@ -114,7 +119,8 @@ int main(int argc, char* argv[]) {
                     close(fd[0]); 			// close the read end
 					close(1);				// close the STDOUT of the child
 					if (dup(fd[1]) == -1) { // configuring output of child to pipe
-						perror("dup");
+						// perror("dup");
+                        printf("Unable to execute\n");
 						exit(-1);
 					} 		
                     char* new_argv[3];
@@ -123,14 +129,16 @@ int main(int argc, char* argv[]) {
                     new_argv[2] = NULL;
                     
                     if (execvp(argv[0], new_argv) < 0) {
-                        perror("exec");
+                        // perror("exec");
+                        printf("Unable to execute\n");
                         exit(-1);
                     }
                 } else { 
                     close(fd[1]); 			// close the write end of the parent
                     close(0);
                     if (dup(fd[0]) == -1) {
-                        perror("dup");
+                        // perror("dup");
+                        printf("Unable to execute\n");
                         exit(-1);
                     }
                     char buf[32];
@@ -142,10 +150,14 @@ int main(int argc, char* argv[]) {
             }
         }
         if (closedir(dir) != 0) {
-            perror("closedir");
+            // perror("closedir");
+            printf("Unable to execute\n");
+            exit(-1);
         }
     } else {
-        perror("opendir");
+        // perror("opendir");
+        printf("Unable to execute\n");
+        exit(-1);
     }
 
     char buf[32];

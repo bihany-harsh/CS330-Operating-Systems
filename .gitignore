@@ -5,6 +5,7 @@
 *
 !*/
 !*.*
+!declaration
 
 # Re-ignore object files
 *.o
