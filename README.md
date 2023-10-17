@@ -4,6 +4,7 @@ This repository contains all of my assignment solutions for the Operating System
 | __Assignment__ | __Task__ | __Subtasks__ |
 |-------------|------------|--------------|
 | Assignment-1 | Process, File and Memory Abstractions | - Chaining Unary Opertors (Binaries) <br> - Custom Directory Space User <br> - Custom implementation of `malloc()` and `free()` functions: `memalloc()` and `memfree()` |
+|Assignment-2|Custom System Call in gemOS|- A new once-read-write wrap-over data structure (`trace_buffer`) used subsequently. <br> - Implementing system call tracing functionality using a custom `strace` syscall, in the trace_buffer. <br> - Implementing function call tracing functionality using a custom `ftrace` syscall, in the trace_buffer.|
 
 
 ### Created by
@@ -18,3 +19,6 @@ This repository contains all of my assignment solutions for the Operating System
 Operating System in Computer System Education. In Workshop on Computer
 Architecture Education (WCAE’19), June 22, 2019, Phoenix, AZ, USA. ACM,
 New York, NY, USA, 8 pages.
+
+[2] gem5 simulator: The gem5 simulator is a modular platform for computer-system architecture research, encompassing system-level architecture as well as processor microarchitecture. It is primarily used to evaluate new hardware designs, system software changes, and compile-time and run-time system optimizations.
+The main website can be found at http://www.gem5.org.
