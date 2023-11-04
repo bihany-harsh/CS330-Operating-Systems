@@ -1,14 +1,10 @@
 # Ignore object files
-*.o
 
 # Ignore executables (assumes executables have no extension)
 *
 !*/
 !*.*
 !declaration
-
-# Re-ignore object files
-*.o
 
 .DS_Store
 
