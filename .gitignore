@@ -9,3 +9,6 @@
 
 # Re-ignore object files
 *.o
+
+.DS_Store
+
