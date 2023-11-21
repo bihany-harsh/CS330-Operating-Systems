@@ -5,6 +5,7 @@ This repository contains all of my assignment solutions for the Operating System
 |-------------|------------|--------------|
 | Assignment-1 | Process, File and Memory Abstractions | - Chaining Unary Opertors (Binaries) <br> - Custom Directory Space User <br> - Custom implementation of `malloc()` and `free()` functions: `memalloc()` and `memfree()` |
 |Assignment-2|Custom System Call in gemOS|- A new once-read-write wrap-over data structure (`trace_buffer`) used subsequently. <br> - Implementing system call tracing functionality using a custom `strace` syscall, in the trace_buffer. <br> - Implementing function call tracing functionality using a custom `ftrace` syscall, in the trace_buffer.|
+|Assignment-3|Memory Manipulations| - Memory mapping support in gemOS (`mmap`, `munmap`, `mprotect`) system calls manipulating the virtual address space. <br> - Page Table Manipluations: Implementing lazy-allocation of physical memory. Handling `page_faults`. <br> - Custom `fork` implementation that supports `copy-on-write` functionality between processes.|
 
 
 ### Created by
